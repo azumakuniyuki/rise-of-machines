@@ -1,0 +1,9 @@
+server/log
+ansible.cfg
+.vagrant
+*.un~
+*.retry
+data/
+tmp/
+.ssh/*.key
+.ssh/*.pub
