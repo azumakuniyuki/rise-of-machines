@@ -1,0 +1,80 @@
+#  _           _        _ _                   _   _                 
+# (_)_ __  ___| |_ __ _| | |      _ __  _   _| |_| |__   ___  _ __  
+# | | '_ \/ __| __/ _` | | |_____| '_ \| | | | __| '_ \ / _ \| '_ \ 
+# | | | | \__ \ || (_| | | |_____| |_) | |_| | |_| | | | (_) | | | |
+# |_|_| |_|___/\__\__,_|_|_|     | .__/ \__, |\__|_| |_|\___/|_| |_|
+#                                |_|    |___/                       
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  vars:
+    local: /usr/local
+  tasks:
+    - name: install-python | Python 2.7 should have been installed(0)
+      register: python27
+      ignore_errors: true
+      failed_when: python27.rc > 0
+      changed_when: python27.rc > 0
+      raw: which python 2> /dev/null
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | RedHat | Python 2.7 should have been installed(1)
+          when: python27|failed
+          raw:  /usr/bin/yum -y install python
+
+        - name: install-python | RedHat | libselinux-python should have been installed(0)
+          register: libselinux_python
+          changed_when: "'libselinux-python' not in libselinux_python.stdout"
+          raw: rpm -aq libselinux-python
+
+        - name: install-python | RedHat | libselinux-python should have been installed(1)
+          register: libselinux_python
+          when: libselinux_python|changed
+          raw:  /usr/bin/yum -y install libselinux-python
+      when: ansible_os_family == "RedHat"
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | Debian | Python 2.7 should have been installed(1)
+          when: python27|failed
+          raw:  /usr/bin/aptitude -y install python2.7
+      when: ansible_os_family == "Debian"
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | Linux | Python 2.7 should have been installed(2)
+          register: python_installed
+          failed_when: python_installed.rc > 0
+          changed_when: python_installed.rc > 0
+          raw: which python 2> /dev/null
+      when: ansible_os_family in ["RedHat", "Debian"]
+
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | OpenBSD | Python 2.7 should have been installed(1)
+          when: python27|failed
+          raw:  cd /usr/ports/lang/python && make install
+      when: ansible_os_family == "OpenBSD"
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | FreeBSD | Python 2.7 should have been installed(1)
+          when: python27|failed
+          raw:  cd /usr/ports/lang/python27 && make install
+      when: ansible_os_family == "FreeBSD"
+
+    # --------------------------------------------------------------------------
+    - block:
+        - name: install-python | BSD | /usr/local/bin/python should be created as a link
+          raw:  test -e {{ local }}/bin/python || ln -s {{ local }}/bin/python2.7 {{ local }}/bin/python
+
+        - name: install-python | BSD | Python 2.7 should have been installed(2)
+          register: python_installed
+          failed_when: python_installed.rc > 0
+          changed_when: python_installed.rc > 0
+          raw: test -x /usr/local/bin/python
+      when: ansible_os_family in ["FreeBSD", "OpenBSD"]
+
