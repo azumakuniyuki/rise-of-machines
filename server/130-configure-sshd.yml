@@ -1,0 +1,94 @@
+#                   __ _                                    _         _ 
+#   ___ ___  _ __  / _(_) __ _ _   _ _ __ ___       ___ ___| |__   __| |
+#  / __/ _ \| '_ \| |_| |/ _` | | | | '__/ _ \_____/ __/ __| '_ \ / _` |
+# | (_| (_) | | | |  _| | (_| | |_| | | |  __/_____\__ \__ \ | | | (_| |
+#  \___\___/|_| |_|_| |_|\__, |\__,_|_|  \___|     |___/___/_| |_|\__,_|
+#                        |___/                                          
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: deploy
+  vars:
+    sshd:
+      execute: true
+      port: __NEW_SSHD_PORT_TO_BE_APPLIED__
+      rootlogin: 'no'
+  tasks:
+    - block:
+      - name: configure-sshd | Enable Port setting in /etc/ssh/sshd_config
+        notify: Restart SSHd
+        replace:
+          backup:   yes
+          dest:     /etc/ssh/sshd_config
+          regexp:   '^#Port (.+)'
+          replace:  'Port \1'
+          validate: 'sshd -t -f %s'
+  
+      - name: configure-sshd | Change sshd port setting
+        when: sshd.port > 0 and sshd.port < 65535
+        notify: Restart SSHd
+        register: rewrite_sshd_config
+        replace:
+          backup:   yes
+          dest:     /etc/ssh/sshd_config
+          regexp:   '^Port .+$'
+          replace:  'Port {{ sshd.port }}'
+          validate: 'sshd -t -f %s'
+  
+      - name: configure-sshd | Enable PermitRootLogin settings in /etc/ssh/sshd_config
+        notify: Restart SSHd
+        replace:
+          backup:   yes
+          dest:     /etc/ssh/sshd_config
+          regexp:   '^#PermitRootLogin (.+)'
+          replace:  'PermitRootLogin \1'
+          validate: 'sshd -t -f %s'
+  
+      - name: configure-sshd | Change PermitRootLogin setting
+        when: rewrite_sshd_config|changed
+        notify: Restart SSHd
+        replace:
+          backup:    yes
+          dest:      /etc/ssh/sshd_config
+          regexp:    '^PermitRootLogin .+$'
+          replace:   'PermitRootLogin {{ sshd.rootlogin }}'
+          validate:  'sshd -t -f %s'
+
+      - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(1)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+        notify: Restart FirewallD
+        shell: cp -p /usr/lib/firewalld/services/ssh.xml .
+        args:
+          chdir:   /etc/firewalld/services
+          creates: ssh.xml
+
+      - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(2)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+        notify: Restart FirewallD
+        replace:
+          backup:   no
+          dest:     /etc/firewalld/services/ssh.xml
+          regexp:   'port="[0-9]+"/>'
+          replace:  'port="{{ sshd.port }}"/>'
+
+      - name: configure-sshd | Linux | Open SSHd port on FirewallD
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+        notify: Restart FirewallD
+        firewalld:
+          service:   ssh
+          permanent: true
+          zone:      public
+          state:     enabled
+      when: sshd.execute == true
+
+  handlers:
+    - name: Restart SSHd
+      service:
+        name:  sshd
+        state: restarted
+
+    - name: Restart FirewallD
+      service:
+        name:  firewalld
+        state: restarted
+
