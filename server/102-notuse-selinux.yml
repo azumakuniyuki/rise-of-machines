@@ -1,0 +1,36 @@
+#              _                                 _ _                  
+#  _ __   ___ | |_ _   _ ___  ___       ___  ___| (_)_ __  _   ___  __
+# | '_ \ / _ \| __| | | / __|/ _ \_____/ __|/ _ \ | | '_ \| | | \ \/ /
+# | | | | (_) | |_| |_| \__ \  __/_____\__ \  __/ | | | | | |_| |>  < 
+# |_| |_|\___/ \__|\__,_|___/\___|     |___/\___|_|_|_| |_|\__,_/_/\_\
+#                                                                     
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  tasks:
+    - name: notuse-selinux | RedHat | libselinux-python should be installed
+      when: ansible_os_family == "RedHat"
+      yum: 
+        name:  libselinux-python
+        state: present
+
+    - name: notuse-selinux | Debian | python-selinux should be installed
+      when: ansible_os_family == "Debian"
+      apt:  
+        name:  python-selinux
+        state: present
+
+    - block:
+        - name: notuse-selinux | Disable SELinux
+          register: getenforce
+          failed_when:  getenforce.rc > 0
+          changed_when: getenforce.rc > 0
+          shell: /usr/sbin/getenforce
+
+        - name: notuse-selinux | Disable SELinux
+          when: "'Disabled' not in getenforce.stdout"
+          selinux:
+            state: disabled
+      when: ansible_os_family in ["RedHat","Debian"]
+
