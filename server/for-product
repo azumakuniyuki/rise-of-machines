@@ -1,0 +1,19 @@
+#   __                                     _            _   
+#  / _| ___  _ __      _ __  _ __ ___   __| |_   _  ___| |_ 
+# | |_ / _ \| '__|____| '_ \| '__/ _ \ / _` | | | |/ __| __|
+# |  _| (_) | | |_____| |_) | | | (_) | (_| | |_| | (__| |_ 
+# |_|  \___/|_|       | .__/|_|  \___/ \__,_|\__,_|\___|\__|
+#                     |_|                                   
+#
+# Ansible inventory file for production servers.
+# % ansible-playbook -i server/for-prodcut path/to/playbook.yml
+#
+[product]
+192.0.2.4
+
+[product:vars]
+ansible_ssh_port=22222
+ansible_ssh_user=deploy
+ansible_ssh_private_key_file=.ssh/ssh.deploy-rsa.key
+# ansible_python_interpreter=/usr/local/bin/python
+# ansible_connection=paramiko

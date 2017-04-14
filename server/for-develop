@@ -1,0 +1,18 @@
+#   __                     _                _             
+#  / _| ___  _ __       __| | _____   _____| | ___  _ __  
+# | |_ / _ \| '__|____ / _` |/ _ \ \ / / _ \ |/ _ \| '_ \ 
+# |  _| (_) | | |_____| (_| |  __/\ V /  __/ | (_) | |_) |
+# |_|  \___/|_|        \__,_|\___| \_/ \___|_|\___/| .__/ 
+#                                                  |_|    
+# Ansible inventory file for development servers.
+# % ansible-playbook -i server/for-develop path/to/playbook.yml
+#
+[develop]
+192.0.2.9
+
+[develop:vars]
+ansible_ssh_port=2222
+ansible_ssh_user=deploy
+ansible_ssh_private_key_file=.ssh/ssh.deploy-rsa.key
+# ansible_python_interpreter=/usr/local/bin/python
+# ansible_connection=paramiko
