@@ -32,7 +32,7 @@ setup:
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
 ssh-key-pair:
-	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER)
+	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) ssh
 	chmod 0600 $(SSHKEYFILE)
 	chmod 0644 $(subst key,pub,$(SSHKEYFILE))
 
