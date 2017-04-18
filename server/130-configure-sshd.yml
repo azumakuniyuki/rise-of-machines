@@ -16,7 +16,7 @@
   tasks:
     - block:
       - name: configure-sshd | Enable Port setting in /etc/ssh/sshd_config
-        notify: Restart SSHd
+        notify: Restart daemons
         replace:
           backup:   yes
           dest:     /etc/ssh/sshd_config
@@ -26,7 +26,7 @@
   
       - name: configure-sshd | Change sshd port setting
         when: sshd.port > 0 and sshd.port < 65535
-        notify: Restart SSHd
+        notify: Restart daemons
         register: rewrite_sshd_config
         replace:
           backup:   yes
@@ -36,7 +36,7 @@
           validate: 'sshd -t -f %s'
   
       - name: configure-sshd | Enable PermitRootLogin settings in /etc/ssh/sshd_config
-        notify: Restart SSHd
+        notify: Restart daemons
         replace:
           backup:   yes
           dest:     /etc/ssh/sshd_config
@@ -46,7 +46,7 @@
   
       - name: configure-sshd | Change PermitRootLogin setting
         when: rewrite_sshd_config|changed
-        notify: Restart SSHd
+        notify: Restart daemons
         replace:
           backup:    yes
           dest:      /etc/ssh/sshd_config
@@ -56,7 +56,7 @@
 
       - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(1)
         when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
-        notify: Restart FirewallD
+        notify: Restart daemons
         shell: cp -p /usr/lib/firewalld/services/ssh.xml .
         args:
           chdir:   /etc/firewalld/services
@@ -64,7 +64,7 @@
 
       - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(2)
         when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
-        notify: Restart FirewallD
+        notify: Restart daemons
         replace:
           backup:   no
           dest:     /etc/firewalld/services/ssh.xml
@@ -73,7 +73,7 @@
 
       - name: configure-sshd | Linux | Open SSHd port on FirewallD
         when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
-        notify: Restart FirewallD
+        notify: Restart daemons
         firewalld:
           service:   ssh
           permanent: true
@@ -82,13 +82,7 @@
       when: sshd.execute == true
 
   handlers:
-    - name: Restart SSHd
-      service:
-        name:  sshd
-        state: restarted
-
-    - name: Restart FirewallD
-      service:
-        name:  firewalld
-        state: restarted
+    - name: Restart daemons
+      shell: >
+        service sshd restart; service firewalld restart
 
