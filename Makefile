@@ -19,6 +19,7 @@ DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
+BUILDPLAYBOOK := build-all-machines.yml
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
@@ -31,8 +32,11 @@ ansible.cfg:
 fact:
 	ansible all -i $(INVENTORYFILE) -m setup
 
-setup:
-	$(MAKE) server
+setup: ssh-key-pair
+	$(MAKE) ansible.cfg
+
+build:
+	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
 
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
@@ -40,12 +44,6 @@ ssh-key-pair:
 	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) ssh
 	chmod 0600 $(SSHKEYFILE)
 	chmod 0644 $(subst key,pub,$(SSHKEYFILE))
-
-# -----------------------------------------------------------------------------
-# Sub directory: server/
-server: ssh-key-pair
-	$(MAKE) -C $@
-	$(MAKE) ansible.cfg
 
 # -----------------------------------------------------------------------------
 # Targets for rise-machines authors
