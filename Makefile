@@ -41,7 +41,7 @@ build:
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
 ssh-key-pair:
-	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) ssh
+	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) all
 	chmod 0600 $(SSHKEYFILE)
 	chmod 0644 $(subst key,pub,$(SSHKEYFILE))
 
