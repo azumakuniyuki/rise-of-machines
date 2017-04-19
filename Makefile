@@ -17,6 +17,8 @@ ULIBDIR := lib
 REPOSITORY  = htts://github.com/azumakuniyuki/rise-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
+
+INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
@@ -25,6 +27,9 @@ SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 ansible.cfg:
 	cd $(ROOTDIR) && make ansible-config
 	test -L ./$(ROOTDIR)/ansible-config || ln -s $(ROOTDIR)/ansible-config ./$@
+
+fact:
+	ansible all -i $(INVENTORYFILE) -m setup
 
 setup:
 	$(MAKE) server
