@@ -38,6 +38,13 @@ setup: ssh-key-pair
 build:
 	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
 
+install-role:
+	if [ -n "$(R)" ]; then \
+		ansible-galaxy install $(R); \
+		mkdir -p $(ROLEDIR)/$(R)/vars; \
+		touch $(ROLEDIR)/$(R)/vars/main.yml; \
+	fi
+
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
 ssh-key-pair:
