@@ -19,7 +19,7 @@ DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
-BUILDPLAYBOOK := build-all-machines.yml
+BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
