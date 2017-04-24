@@ -1,0 +1,27 @@
+#                                                      _             __   
+#  _ __   _____   _____ _ __      _   _ ___  ___      (_)_ ____   __/ /_  
+# | '_ \ / _ \ \ / / _ \ '__|____| | | / __|/ _ \_____| | '_ \ \ / / '_ \ 
+# | | | |  __/\ V /  __/ | |_____| |_| \__ \  __/_____| | |_) \ V /| (_) |
+# |_| |_|\___| \_/ \___|_|        \__,_|___/\___|     |_| .__/ \_/  \___/ 
+#                                                       |_|               
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  tasks:
+    - name: never-use-ipv6 | Disable IPv6
+      notify: Restart Network
+      sysctl:
+        name:  "{{ item }}"
+        value: "1"
+        state: "present"
+      with_items:
+        - "net.ipv6.conf.all.disable_ipv6"
+        - "net.ipv6.conf.default.disable_ipv6"
+
+  handlers:
+    - name: Restart Network
+      service:
+        name:  "network"
+        state: "restarted"
+
