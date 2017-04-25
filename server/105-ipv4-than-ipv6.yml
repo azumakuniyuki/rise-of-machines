@@ -1,0 +1,30 @@
+#  _            _  _         _   _                       _             __   
+# (_)_ ____   _| || |       | |_| |__   __ _ _ __       (_)_ ____   __/ /_  
+# | | '_ \ \ / / || |_ _____| __| '_ \ / _` | '_ \ _____| | '_ \ \ / / '_ \ 
+# | | |_) \ V /|__   _|_____| |_| | | | (_| | | | |_____| | |_) \ V /| (_) |
+# |_| .__/ \_/    |_|        \__|_| |_|\__,_|_| |_|     |_| .__/ \_/  \___/ 
+#   |_|                                                   |_|               
+- hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  tasks:
+    - name: ipv4-than-ipv6 | /etc/gai.conf should exist
+      register: etc_gai_conf
+      ignore_errors: true
+      file:
+        path:  "/etc/gai.conf"
+        state: "file"
+
+    - name: ipv4-than-ipv6 | /etc/gai.conf should be created
+      when: etc_gai_conf|failed
+      shell: echo 'precedence ::ffff:0:0/96  99' >> /etc/gai.conf
+
+    - name: ipv4-than-ipv6 | /etc/gai.conf should be configured
+      when: etc_gai_conf|success
+      replace:
+        backup:  "yes"
+        dest:    "/etc/gai.conf"
+        regexp:  "^#precedence ::ffff:0:0/96  (.+)$"
+        replace: "precedence ::ffff:0:0/96  99"
+
