@@ -18,27 +18,27 @@
     - name: configure-sudo | wheel group should be created
       when: wheel|failed
       group:
-        name: wheel
-        system: yes
-        state: present
+        name:   "wheel"
+        system: "yes"
+        state:  "present"
 
     - name: configure-sudo | root should be included in wheel group
       ignore_errors: true
       user:
-        name: root
-        groups: wheel
+        name:   "root"
+        groups: "wheel"
 
     # --------------------------------------------------------------------------
     - block:
         - name: configure-sudo | RedHat | sudo(8) should be installed
           yum:
-            name:  sudo
-            state: present
+            name:  "sudo"
+            state: "present"
 
         - name: configure-sudo | RedHat | Enable sudo for users in wheel group
           replace:
-            backup:  yes
-            dest:    /etc/sudoers
+            backup:  "yes"
+            dest:    "/etc/sudoers"
             regexp:  '^# %wheel\s+ALL=\(ALL\)\s+ALL$'
             replace: '%wheel	ALL=(ALL)	ALL'
       when: ansible_os_family == "RedHat"
@@ -47,21 +47,21 @@
     - block:
         - name: configure-sudo | Debian | sudo(8) should be installed
           apt:
-            name:  sudo
-            state: present
+            name:  "sudo"
+            state: "present"
       when: ansible_os_family == "Debian"
 
     # --------------------------------------------------------------------------
     - block:
         - name: configure-sudo | FreeBSD | sudo(8) should be installed
           pkgng:
-            name:  sudo
-            state: present
+            name:  "sudo"
+            state: "present"
 
         - name: configure-sudo | FreeBSD | Enable sudo for users in wheel group
           replace:
-            backup:  yes
-            dest:    /usr/local/etc/sudoers
+            backup:  "yes"
+            dest:    "/usr/local/etc/sudoers"
             regexp:  '^# %wheel\s+ALL=\(ALL\)\s+ALL$'
             replace: '%wheel ALL=(ALL) ALL'
       when: ansible_os_family == "FreeBSD"
@@ -70,8 +70,8 @@
     - block:
         - name: configure-sudo | OpenBSD | Enable sudo for users in wheel group
           replace:
-            backup:  yes
-            dest:    /etc/sudoers
+            backup:  "yes"
+            dest:    "/etc/sudoers"
             regexp:  '^# %wheel\s+ALL=\(ALL\)\s+SETENV:\s+ALL$'
             replace: '%wheel        ALL=(ALL) SETENV: ALL'
       when: ansible_os_family == "OpenBSD"

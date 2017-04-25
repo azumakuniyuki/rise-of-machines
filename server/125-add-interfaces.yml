@@ -10,11 +10,11 @@
   remote_user: deploy
   vars:
     interfaces:
-      - device: eth1
-        onboot: yes
+      - device: "eth1"
+        onboot: "yes"
         ipv4:
-          address: 192.0.2.2
-          netmask: 255.255.255.0
+          address: "192.0.2.2"
+          netmask: "255.255.255.0"
   tasks:
     - block:
         - name: add-network | RedHat | Create Each device file
@@ -24,14 +24,14 @@
             "{{ item.device }}" "{{ item.ipv4.address }}" "{{ item.ipv4.netmask }}"
             "{{ item.onboot }}" > ifcfg-{{ item.device }}
           args:
-            chdir:   /etc/sysconfig/network-scripts
+            chdir:   "/etc/sysconfig/network-scripts"
             creates: "ifcfg-{{ item.device }}"
           with_items: "{{ interfaces }}"
 
         - name: add-network | RedHat | Rewrite each network config file(DEVICE)
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^DEVICE=.*$'
             replace: 'DEVICE={{ item.device }}'
@@ -40,7 +40,7 @@
         - name: add-network | RedHat | Remove comment(IPADDR) for the next task
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^#IPADDR=(.*)$'
             replace: 'IPADDR=\1'
@@ -49,7 +49,7 @@
         - name: add-network | RedHat | Remove comment(NETMASK) for the next task
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^#NETMASK=(.*)$'
             replace: 'NETMASK=\1'
@@ -58,7 +58,7 @@
         - name: add-network | RedHat | Rewrite each network config file(IPADDR)
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^IPADDR=.*$'
             replace: 'IPADDR={{ item.ipv4.address }}'
@@ -67,7 +67,7 @@
         - name: add-network | RedHat | Rewrite each network config file(NETMASK)
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^NETMASK=.*$'
             replace: 'NETMASK={{ item.ipv4.netmask }}'
@@ -76,7 +76,7 @@
         - name: add-network | RedHat | Rewrite each network config file(ONBOOT)
           notify: Restart Network
           replace:
-            backup:  yes
+            backup:  "yes"
             dest:    "/etc/sysconfig/network-scripts/ifcfg-{{ item.device }}"
             regexp:  '^ONBOOT=.*$'
             replace: 'ONBOOT={{ item.onboot }}'
@@ -86,6 +86,6 @@
   handlers:
     - name: Restart Network
       service:
-        name: network
-        state: restarted
+        name:  "network"
+        state: "restarted"
 

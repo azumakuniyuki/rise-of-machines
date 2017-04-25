@@ -12,14 +12,14 @@
     - name: notuse-selinux | RedHat | libselinux-python should be installed
       when: ansible_os_family == "RedHat"
       yum: 
-        name:  libselinux-python
-        state: present
+        name:  "libselinux-python"
+        state: "present"
 
     - name: notuse-selinux | Debian | python-selinux should be installed
       when: ansible_os_family == "Debian"
       apt:  
-        name:  python-selinux
-        state: present
+        name:  "python-selinux"
+        state: "present"
 
     - block:
         - name: notuse-selinux | Disable SELinux
@@ -31,6 +31,6 @@
         - name: notuse-selinux | Disable SELinux
           when: "'Disabled' not in getenforce.stdout"
           selinux:
-            state: disabled
+            state: "disabled"
       when: ansible_os_family in ["RedHat","Debian"]
 

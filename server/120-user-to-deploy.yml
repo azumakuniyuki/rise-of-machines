@@ -10,39 +10,39 @@
   remote_user: root
   vars:
     conf:
-      home: /home
+      home: "/home"
     user:
-      username: deploy
-      password: $5$cNynTWN1$UFS1hSpKKOHcArUeHwypn9SQKz19oC7DOVCwUTEzUFB
-      group: deploy
-      uid: 400
-      gid: 400
+      username: "deploy"
+      password: "$5$cNynTWN1$UFS1hSpKKOHcArUeHwypn9SQKz19oC7DOVCwUTEzUFB"
+      group:    "deploy"
+      uid:      "400"
+      gid:      "400"
   tasks:
     - name: user-to-deploy | Group for deployment should be created
       group:
         name:  "{{ user.username }}"
         gid:   "{{ user.gid }}"
-        state: present
+        state: "present"
 
     - name: user-to-deploy | User for deployment should be created
       user:
         name:   "{{ user.username }}"
         uid:    "{{ user.uid }}"
         group:  "{{ user.group }}"
-        groups: wheel
-        shell:  /bin/sh
+        groups: "wheel"
+        shell:  "/bin/sh"
         home:   "{{ conf.home }}/{{ user.username }}"
-        password: "{{ user.password }}"
-        createhome: yes
-        state: present
+        password:   "{{ user.password }}"
+        createhome: "yes"
+        state:      "present"
 
     - name: user-to-deploy | Vagrant | vagrant should belong to deploy group
       when: ansible_product_name == "VirtualBox" and
             ( ansible_env.SUDO_USER == "vagrant" or ansible_user_id == "vagrant" )
       user: 
-        name:   vagrant
+        name:   "vagrant"
         groups: "wheel,{{ user.group}}"
-        state:  present
+        state:  "present"
 
 
     # --------------------------------------------------------------------------
@@ -53,11 +53,14 @@
             '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
             {{ user.group }} : | tr "'" '"' > deploy
           args:
-            chdir:   /etc/sudoers.d
-            creates: deploy
+            chdir:   "/etc/sudoers.d"
+            creates: "deploy"
 
         - name: user-to-deploy | Linux | sudoers.d/deploy is 0440
-          file: path=/etc/sudoers.d/deploy mode=0440 state=file
+          file:
+            path:  "/etc/sudoers.d/deploy"
+            mode:  "0440"
+            state: "file"
       when: ansible_system == "Linux"
 
     # --------------------------------------------------------------------------
@@ -68,14 +71,14 @@
             '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
             {{ user.group }} : | tr "'" '"' > deploy
           args:
-            chdir:   /usr/local/etc/sudoers.d
-            creates: deploy
+            chdir:   "/usr/local/etc/sudoers.d"
+            creates: "deploy"
 
         - name: user-to-deploy | FreeBSD | sudoers.d/deploy is 0440
           file: 
-            path:  /usr/local/etc/sudoers.d/deploy
-            mode:  0440
-            state: file
+            path:  "/usr/local/etc/sudoers.d/deploy"
+            mode:  "0440"
+            state: "file"
       when: ansible_os_family == "FreeBSD"
 
     # --------------------------------------------------------------------------

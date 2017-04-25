@@ -10,16 +10,16 @@
   remote_user: deploy
   vars:
     sshd:
-      execute: true
-      port: __NEW_SSHD_PORT_TO_BE_APPLIED__
-      rootlogin: 'no'
+      execute:   true
+      port:      "__NEW_SSHD_PORT_TO_BE_APPLIED__"
+      rootlogin: "no"
   tasks:
     - block:
       - name: configure-sshd | Enable Port setting in /etc/ssh/sshd_config
         notify: Restart daemons
         replace:
-          backup:   yes
-          dest:     /etc/ssh/sshd_config
+          backup:   "yes"
+          dest:     "/etc/ssh/sshd_config"
           regexp:   '^#Port (.+)'
           replace:  'Port \1'
           validate: 'sshd -t -f %s'
@@ -29,8 +29,8 @@
         notify: Restart daemons
         register: rewrite_sshd_config
         replace:
-          backup:   yes
-          dest:     /etc/ssh/sshd_config
+          backup:   "yes"
+          dest:     "/etc/ssh/sshd_config"
           regexp:   '^Port .+$'
           replace:  'Port {{ sshd.port }}'
           validate: 'sshd -t -f %s'
@@ -38,8 +38,8 @@
       - name: configure-sshd | Enable PermitRootLogin settings in /etc/ssh/sshd_config
         notify: Restart daemons
         replace:
-          backup:   yes
-          dest:     /etc/ssh/sshd_config
+          backup:   "yes"
+          dest:     "/etc/ssh/sshd_config"
           regexp:   '^#PermitRootLogin (.+)'
           replace:  'PermitRootLogin \1'
           validate: 'sshd -t -f %s'
@@ -48,8 +48,8 @@
         when: rewrite_sshd_config|changed
         notify: Restart daemons
         replace:
-          backup:    yes
-          dest:      /etc/ssh/sshd_config
+          backup:    "yes"
+          dest:      "/etc/ssh/sshd_config"
           regexp:    '^PermitRootLogin .+$'
           replace:   'PermitRootLogin {{ sshd.rootlogin }}'
           validate:  'sshd -t -f %s'
@@ -59,15 +59,15 @@
         notify: Restart daemons
         shell: cp -p /usr/lib/firewalld/services/ssh.xml .
         args:
-          chdir:   /etc/firewalld/services
-          creates: ssh.xml
+          chdir:   "/etc/firewalld/services"
+          creates: "ssh.xml"
 
       - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(2)
         when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
         notify: Restart daemons
         replace:
-          backup:   no
-          dest:     /etc/firewalld/services/ssh.xml
+          backup:   "no"
+          dest:     "/etc/firewalld/services/ssh.xml"
           regexp:   'port="[0-9]+"/>'
           replace:  'port="{{ sshd.port }}"/>'
 
@@ -75,10 +75,10 @@
         when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
         notify: Restart daemons
         firewalld:
-          service:   ssh
+          service:   "ssh"
           permanent: true
-          zone:      public
-          state:     enabled
+          zone:      "public"
+          state:     "enabled"
       when: sshd.execute == true
 
   handlers:

@@ -10,48 +10,54 @@
   remote_user: deploy
   vars:
     fetchfile: true
-    fetchinto: ../tmp/
-    directory: /var/tmp/ssl
-    algorithm: des3
+    fetchinto: "../tmp/"
+    directory: "/var/tmp/ssl"
+    algorithm: "des3"
     certslist:
-      - fileprefix: EXAMPLE.JP
-        passphrase: nekochan22
+      - fileprefix: "EXAMPLE.JP"
+        passphrase: "nekochan22"
         seckeysize: 2048
         expiration: 365
         x509:
-          commonname: example.jp
-          email: postmaster@example.jp
-          country: JP
-          state: Kyoto
-          city: Kyoto
-          company: '"EXAMPLE Co. Ltd."'
-          section: '"Network System"'
+          commonname: "example.jp"
+          email:      "postmaster@example.jp"
+          country:    "JP"
+          state:      "Kyoto"
+          city:       "Kyoto"
+          company:    '"EXAMPLE Co. Ltd."'
+          section:    '"Network System"'
   tasks:
     - name: make-ssl-files | RedHat | openssl command should be installed
       when: ansible_os_family == "RedHat"
-      yum: name=openssl state=present
+      yum:
+        name:  "openssl"
+        state: "present"
 
     - name: make-ssl-files | Debian | openssl command should be installed
       when: ansible_os_family == "Debian"
-      apt: name=openssl state=present
+      apt:
+        name:  "openssl"
+        state: "present"
 
     - name: make-ssl-files | FreeBSD | openssl command should be installed
       when: ansible_os_family == "FreeBSD"
-      pkgng: name=openssl state=present
+      pkgng:
+        name:  "openssl"
+        state: "present"
 
     - name: make-ssl-files | {{ directory }}/ should be created
       file:
         path:  "{{ directory }}"
-        mode:  0755
-        owner: root
-        state: directory
+        mode:  "0755"
+        owner: "root"
+        state: "directory"
 
     - name: make-ssl-files | {{ directory }}/{{ item.x509.commonname }} should be created
       file:
         path:  "{{ directory }}/{{ item.x509.commonname }}"
-        mode:  0755
-        owner: root
-        state: directory
+        mode:  "0755"
+        owner: "root"
+        state: "directory"
       with_items: "{{ certslist }}"
 
     - name: make-ssl-files | Each private key should be created
@@ -176,14 +182,14 @@
       fetch:
         src:  "{{ directory }}/{{ item.x509.commonname }}.tar.gz"
         dest: "{{ fetchinto }}"
-        flat: yes
+        flat: "yes"
       with_items: "{{ certslist }}"
 
     - name: make-ssl-files | CSR should be downloaded in the tmp/ directory
       when: fetchfile == true
       fetch:
         src:  "{{ directory }}/{{ item.x509.commonname }}/{{ item.fileprefix }}.CSR"
-        dest: /tmp/
-        flat: yes
+        dest: "/tmp/"
+        flat: "yes"
       with_items: "{{ certslist }}"
 
