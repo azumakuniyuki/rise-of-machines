@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.0.1'
+VERSION := '0.0.2'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -43,6 +43,16 @@ install-role:
 		ansible-galaxy install $(R); \
 		mkdir -p $(ROLEDIR)/$(R)/vars; \
 		touch $(ROLEDIR)/$(R)/vars/main.yml; \
+	fi
+
+role-skeleton:
+	if [ -n "$(R)" ]; then \
+		for e in defaults files handlers meta tasks templates tests vars; do \
+			mkdir -p $(ROLEDIR)/$(R)/$$e; \
+		done; \
+		for e in handlers meta tasks vars; do \
+			touch $(ROLEDIR)/$(R)/$$e/main.yml; \
+		done; \
 	fi
 
 # -----------------------------------------------------------------------------
