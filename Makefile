@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.0'
+VERSION := '0.1.1'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -62,12 +62,11 @@ role-skeleton:
 	fi
 
 me-upgrade:
-	if [ "$(PWDNAME)" != "rise-machines" ]; then \
-		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done; \
-		for v in $(SUBDIRS); do \
-			cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
-		done; \
-	fi
+	@test "$(PWDNAME)" != "rise-machines"
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done
+	@for v in $(SUBDIRS); do \
+		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
+	done
 
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/

@@ -8,6 +8,7 @@
 # -----------------------------------------------------------------------------
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
+CURNODE := $(shell echo $(dir $(shell cd ../ && pwd)) | xargs basename)
 MAKEDIR  = mkdir -p
 
 .DEFAULT_GOAL := git-status
@@ -15,6 +16,10 @@ MAKEDIR  = mkdir -p
 # -----------------------------------------------------------------------------
 .PHONY: clean
 .SUFFIXES:
+
+me-upgrade:
+	@test "$(CURNODE)" != "rise-machines"
+	for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/server/roles/$$v; done
 
 git-status:
 	git status

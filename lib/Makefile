@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------------
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
+CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 MAKEDIR  = mkdir -p
 
 WILLBEUPDATED  = Makefile ansible_helper.rb spec_helper.rb
@@ -17,9 +18,8 @@ WILLBEUPDATED  = Makefile ansible_helper.rb spec_helper.rb
 .SUFFIXES:
 
 me-upgrade:
-	if [ "$(CURNODE)" != "rise-machines" ]; then \
-		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done; \
-	fi
+	@test "$(CURNODE)" != "rise-machines"
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 git-status:
 	git status

@@ -7,19 +7,24 @@
 # ---------------------------------------------------------------------------
 HEREIAM  = $(shell pwd)
 PWDNAME  = $(shell echo $(HEREIAM) | xargs basename)
+CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 SUBDIRS := roles
 ROLEDIR := roles
 MAKEDIR  = mkdir -p
 
-.DEFAULT_GOAL := git-status
 ROOTDIRECTORY := server
 INVENTORYFILE  = $(shell head -1 ../.default-inventoryfile)
 ANSIBLECONFIG := ansible-config
 ANSIBLECMDLOG := ansible.log
 INVENTORYLIST := for-develop for-install for-product for-sandbox for-staging
+WILLBEUPDATED  = 100-update-package.yml 101-install-python.yml 102-notuse-selinux.yml \
+				 103-apply-hostname.yml 104-never-use-ipv6.yml 105-ipv4-than-ipv6.yml \
+				 110-configure-sudo.yml 120-user-to-deploy.yml 125-add-interfaces.yml \
+				 130-configure-sshd.yml 901-make-ssl-files.yml Makefile
 
 BUILDPLAYBOOK := build-all-machines.yml
 ANSIBLETARGET := $(INVENTORYLIST) $(PLAYBOOKFILES)
+.DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
 .PHONY: clean
@@ -28,6 +33,13 @@ ANSIBLETARGET := $(INVENTORYLIST) $(PLAYBOOKFILES)
 all:
 	$(MAKE) $(ANSIBLECONFIG) $(INVENTORYLIST) $(ANSIBLECMDLOG)
 	$(MAKE) $(SUBDIRS)
+
+me-upgrade:
+	@test "$(CURNODE)" != "rise-machines"
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+	@for v in $(SUBDIRS); do \
+		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
+	done
 
 $(ANSIBLECMDLOG):
 	touch ./$@

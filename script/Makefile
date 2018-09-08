@@ -8,6 +8,7 @@
 # -----------------------------------------------------------------------------
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
+CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 MAKEDIR  = mkdir -p
 
 WILLBEUPDATED  = Makefile disable-selinux install-python-eggs
@@ -18,9 +19,8 @@ WILLBEUPDATED  = Makefile disable-selinux install-python-eggs
 .SUFFIXES:
 
 me-upgrade:
-	if [ "$(CURNODE)" != "rise-machines" ]; then \
-		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done; \
-	fi
+	@test "$(CURNODE)" != "rise-machines"
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 git-status:
 	git status
