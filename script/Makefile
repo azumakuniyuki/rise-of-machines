@@ -10,11 +10,17 @@ HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR  = mkdir -p
 
+WILLBEUPDATED  = Makefile disable-selinux install-python-eggs
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
 .PHONY: clean
 .SUFFIXES:
+
+me-upgrade:
+	if [ "$(CURNODE)" != "rise-machines" ]; then \
+		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done; \
+	fi
 
 git-status:
 	git status

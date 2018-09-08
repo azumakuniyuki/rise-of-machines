@@ -14,11 +14,14 @@ SUBDIRS := server lib .ssh script
 ROLEDIR := $(ROOTDIR)/roles
 ULIBDIR := lib
 
+DOWNLOADBY := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
 GITHUBROOT  = https://github.com/azumakuniyuki
+GITHUBFILE  = https://raw.githubusercontent.com/azumakuniyuki/rise-machines/master
 REPOSITORY  = $(GITHUBROOT)/rise-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
+WILLBEUPDATED  = Makefile LICENSE
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
 BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 .DEFAULT_GOAL := git-status
@@ -55,6 +58,14 @@ role-skeleton:
 		done; \
 		for e in handlers meta tasks vars; do \
 			touch $(ROLEDIR)/$(R)/$$e/main.yml; \
+		done; \
+	fi
+
+me-upgrade:
+	if [ "$(PWDNAME)" != "rise-machines" ]; then \
+		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done; \
+		for v in $(SUBDIRS); do \
+			cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
 		done; \
 	fi
 

@@ -9,9 +9,10 @@ HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename )
 
-.DEFAULT_GOAL := git-status
 SSH2SECRETKEY  = $(notdir $(DEPLOYKEY))
 SSH2PUBLICKEY  = $(subst key,pub,$(SSH2SECRETKEY))
+WILLBEUPDATED  = Makefile 
+.DEFAULT_GOAL := git-status
 
 # ---------------------------------------------------------------------------
 .PHONY: clean all
@@ -25,6 +26,11 @@ $(SSH2SECRETKEY):
 .key.pub:
 	test -f $(SSH2SECRETKEY).pub && mv $(SSH2SECRETKEY).pub $(SSH2PUBLICKEY)
 	chmod 0644 $(SSH2PUBLICKEY)
+
+me-upgrade:
+	if [ "$(CURNODE)" != "rise-machines" ]; then \
+		for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done; \
+	fi
 
 git-status:
 	git status
