@@ -14,7 +14,7 @@ SUBDIRS := server lib .ssh script
 ROLEDIR := $(ROOTDIR)/roles
 ULIBDIR := lib
 
-REPOSITORY  = htts://github.com/azumakuniyuki/rise-machines.git
+REPOSITORY  = https://github.com/azumakuniyuki/rise-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
