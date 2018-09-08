@@ -14,7 +14,8 @@ SUBDIRS := server lib .ssh script
 ROLEDIR := $(ROOTDIR)/roles
 ULIBDIR := lib
 
-REPOSITORY  = https://github.com/azumakuniyuki/rise-machines.git
+GITHUBROOT  = https://github.com/azumakuniyuki
+REPOSITORY  = $(GITHUBROOT)/rise-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
@@ -39,10 +40,12 @@ build:
 	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
 
 install-role:
-	if [ -n "$(R)" ]; then \
-		ansible-galaxy install $(R); \
-		mkdir -p $(ROLEDIR)/$(R)/vars; \
-		touch $(ROLEDIR)/$(R)/vars/main.yml; \
+	@if [ -n "$(R)" ]; then \
+		git clone $(GITHUBROOT)/$(R).git $(ROLEDIR)/$(R); \
+		if [ -d "$(ROLEDIR)/$(R)" ]; then \
+			mkdir -p $(ROLEDIR)/$(R)/vars; \
+			touch $(ROLEDIR)/$(R)/vars/main.yml; \
+		fi; \
 	fi
 
 role-skeleton:
