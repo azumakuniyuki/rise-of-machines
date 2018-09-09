@@ -33,7 +33,6 @@ ANSIBLETARGET := $(INVENTORYLIST) $(PLAYBOOKFILES)
 
 all:
 	$(MAKE) $(ANSIBLECONFIG) $(INVENTORYLIST) $(ANSIBLECMDLOG)
-	$(MAKE) $(SUBDIRS)
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
