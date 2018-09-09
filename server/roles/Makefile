@@ -11,6 +11,7 @@ PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(shell cd ../ && pwd)) | xargs basename)
 MAKEDIR  = mkdir -p
 
+DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
@@ -19,7 +20,7 @@ MAKEDIR  = mkdir -p
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
-	for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/server/roles/$$v; done
+	for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/server/roles/$$v; done
 
 git-status:
 	git status

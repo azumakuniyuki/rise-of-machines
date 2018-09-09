@@ -9,6 +9,7 @@ HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 
+DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
 SSH2SECRETKEY  = $(notdir $(DEPLOYKEY))
 SSH2PUBLICKEY  = $(subst key,pub,$(SSH2SECRETKEY))
 WILLBEUPDATED  = Makefile 
@@ -29,7 +30,7 @@ $(SSH2SECRETKEY):
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
-	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 git-status:
 	git status

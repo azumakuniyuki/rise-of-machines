@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.1'
+VERSION := '0.1.2'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -21,7 +21,7 @@ REPOSITORY  = $(GITHUBROOT)/rise-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
-WILLBEUPDATED  = Makefile LICENSE
+WILLBEUPDATED  = Makefile
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
 BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 .DEFAULT_GOAL := git-status
@@ -65,7 +65,7 @@ me-upgrade:
 	@test "$(PWDNAME)" != "rise-machines"
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done
 	@for v in $(SUBDIRS); do \
-		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
+		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@;\
 	done
 
 # -----------------------------------------------------------------------------

@@ -13,6 +13,7 @@ ROLEDIR := roles
 MAKEDIR  = mkdir -p
 
 ROOTDIRECTORY := server
+DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
 INVENTORYFILE  = $(shell head -1 ../.default-inventoryfile)
 ANSIBLECONFIG := ansible-config
 ANSIBLECMDLOG := ansible.log
@@ -36,9 +37,9 @@ all:
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
-	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 	@for v in $(SUBDIRS); do \
-		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) DOWNLOADBY=$(DOWNLOADBY) $@;\
+		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@;\
 	done
 
 $(ANSIBLECMDLOG):

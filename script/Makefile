@@ -11,6 +11,7 @@ PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 MAKEDIR  = mkdir -p
 
+DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
 WILLBEUPDATED  = Makefile disable-selinux install-python-eggs
 .DEFAULT_GOAL := git-status
 
@@ -20,7 +21,7 @@ WILLBEUPDATED  = Makefile disable-selinux install-python-eggs
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
-	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 git-status:
 	git status
