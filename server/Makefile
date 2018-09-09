@@ -38,9 +38,6 @@ all:
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
-	@for v in $(SUBDIRS); do \
-		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@;\
-	done
 
 $(ANSIBLECMDLOG):
 	touch ./$@
