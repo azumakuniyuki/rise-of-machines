@@ -8,7 +8,6 @@
 HEREIAM  = $(shell pwd)
 PWDNAME  = $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
-SUBDIRS := roles
 ROLEDIR := roles
 MAKEDIR  = mkdir -p
 
