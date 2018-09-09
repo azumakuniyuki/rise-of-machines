@@ -13,7 +13,7 @@ ROLEDIR := roles
 MAKEDIR  = mkdir -p
 
 ROOTDIRECTORY := server
-DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
+DOWNLOADUSING := $(shell (which wget && echo '-O') || (which curl && echo '-Lo') || echo 'get-command')
 INVENTORYFILE  = $(shell head -1 ../.default-inventoryfile)
 ANSIBLECONFIG := ansible-config
 ANSIBLECMDLOG := ansible.log

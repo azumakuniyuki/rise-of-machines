@@ -10,7 +10,7 @@ PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
 MAKEDIR  = mkdir -p
 
-DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
+DOWNLOADUSING := $(shell (which wget && echo '-O') || (which curl && echo '-Lo') || echo 'get-command')
 WILLBEUPDATED  = Makefile ansible_helper.rb spec_helper.rb
 .DEFAULT_GOAL := git-status
 

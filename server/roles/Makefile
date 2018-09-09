@@ -11,7 +11,7 @@ PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(shell cd ../ && pwd)) | xargs basename)
 MAKEDIR  = mkdir -p
 
-DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
+DOWNLOADUSING := $(shell (which wget && echo '-O') || (which curl && echo '-Lo') || echo 'get-command')
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------

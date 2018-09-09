@@ -14,7 +14,7 @@ SUBDIRS := server lib .ssh script
 ROLEDIR := $(ROOTDIR)/roles
 ULIBDIR := lib
 
-DOWNLOADBY := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo') || echo 'get-command')
+DOWNLOADBY := $(shell (which wget && echo '-O') || (which curl && echo '-Lo') || echo 'get-command')
 GITHUBROOT  = https://github.com/azumakuniyuki
 GITHUBFILE  = https://raw.githubusercontent.com/azumakuniyuki/rise-machines/master
 REPOSITORY  = $(GITHUBROOT)/rise-machines.git
