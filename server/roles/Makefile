@@ -20,7 +20,6 @@ DOWNLOADUSING := $(shell (which wget && echo '-cO') || (which curl && echo '-Lo'
 
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
-	for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/server/roles/$$v; done
 
 git-status:
 	git status
