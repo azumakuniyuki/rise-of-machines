@@ -65,7 +65,7 @@ me-upgrade:
 	@test "$(PWDNAME)" != "rise-machines"
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done
 	@for v in $(SUBDIRS); do \
-		cd $$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@;\
+		cd $(HEREIAM)/$$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@; \
 	done
 
 # -----------------------------------------------------------------------------
