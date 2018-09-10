@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.2'
+VERSION := '0.1.3'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -47,10 +47,14 @@ build: ssh-key-pair
 
 install-role:
 	@if [ -n "$(R)" ]; then \
-		git clone $(GITHUBROOT)/$(R).git $(ROLEDIR)/$(R); \
-		if [ -d "$(ROLEDIR)/$(R)" ]; then \
+		if [ ! -d "$(ROLEDIR)/$(R)" ]; then \
+			git clone $(GITHUBROOT)/$(R).git $(ROLEDIR)/$(R); \
 			mkdir -p $(ROLEDIR)/$(R)/vars; \
 			touch $(ROLEDIR)/$(R)/vars/main.yml; \
+			find $(ROLEDIR)/$(R) -type f -name '.travis.yml' -delete; \
+			find $(ROLEDIR)/$(R) -type f -name '.gitignore' -delete; \
+			find $(ROLEDIR)/$(R) -type f -name 'Makefile' -delete; \
+			find $(ROLEDIR)/$(R) -type d -name '.git' | xargs rm -r; \
 		fi; \
 	fi
 
@@ -70,6 +74,14 @@ me-upgrade:
 	@for v in $(SUBDIRS); do \
 		cd $(HEREIAM)/$$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@; \
 	done
+
+initialize-as-new-repository:
+	@test "$(PWDNAME)" != "rise-machines"
+	if [ test -f "./.git/config" ]; then \
+		grep 'rise-machines' ./.git/config > /dev/null; \
+		rm -r ./.git; \
+		git init; \
+	fi
 
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
