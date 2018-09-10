@@ -39,10 +39,10 @@ fact:
 setup: ssh-key-pair
 	$(MAKE) ansible.cfg
 
-env:
+env: ssh-key-pair
 	cd $(ROOTDIR) && make $@
 
-build:
+build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
 
 install-role:
