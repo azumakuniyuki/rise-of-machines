@@ -51,10 +51,8 @@ install-role:
 			git clone $(GITHUBROOT)/$(R).git $(ROLEDIR)/$(R); \
 			mkdir -p $(ROLEDIR)/$(R)/vars; \
 			touch $(ROLEDIR)/$(R)/vars/main.yml; \
-			find $(ROLEDIR)/$(R) -type f -name '.travis.yml' -delete; \
-			find $(ROLEDIR)/$(R) -type f -name '.gitignore' -delete; \
-			find $(ROLEDIR)/$(R) -type f -name 'Makefile' -delete; \
-			find $(ROLEDIR)/$(R) -type d -name '.git' | xargs rm -r; \
+			rm -f $(ROLEDIR)/$(R)/Makefile; \
+			cd $(ROLEDIR) && make clean
 		fi; \
 	fi
 
@@ -68,20 +66,21 @@ role-skeleton:
 		done; \
 	fi
 
-me-upgrade:
-	@test "$(PWDNAME)" != "rise-machines"
+me-upgrade: is-not-rise-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done
 	@for v in $(SUBDIRS); do \
 		cd $(HEREIAM)/$$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@; \
 	done
 
-initialize-as-new-repository:
-	@test "$(PWDNAME)" != "rise-machines"
+initialize-as-new-repository: is-not-rise-machines
 	if [ test -f "./.git/config" ]; then \
 		grep 'rise-machines' ./.git/config > /dev/null; \
 		rm -r ./.git; \
 		git init; \
 	fi
+
+is-not-rise-machines:
+	@test "$(PWDNAME)" != "rise-machines"
 
 # -----------------------------------------------------------------------------
 # Sub directory: .ssh/
@@ -116,6 +115,7 @@ git-push:
 clean:
 	rm -f ./*.retry
 	cd $(ROOTDIR) && make $@
+	cd $(ROLEDIR) && make $@
 
 # -----------------------------------------------------------------------------
 # include NodeLocal.mk, User-defined macros and targets are defined in the file.

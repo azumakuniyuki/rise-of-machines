@@ -28,9 +28,11 @@ $(SSH2SECRETKEY):
 	test -f $(SSH2SECRETKEY).pub && mv $(SSH2SECRETKEY).pub $(SSH2PUBLICKEY)
 	chmod 0644 $(SSH2PUBLICKEY)
 
-me-upgrade:
-	@test "$(CURNODE)" != "rise-machines"
+me-upgrade: is-not-rise-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+
+is-not-rise-machines:
+	@test "$(CURNODE)" != "rise-machines"
 
 git-status:
 	git status

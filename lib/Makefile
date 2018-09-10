@@ -18,9 +18,11 @@ WILLBEUPDATED  = Makefile ansible_helper.rb spec_helper.rb
 .PHONY: clean
 .SUFFIXES:
 
-me-upgrade:
-	@test "$(CURNODE)" != "rise-machines"
+me-upgrade: is-not-rise-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
+
+is-not-rise-machines:
+	@test "$(CURNODE)" != "rise-machines"
 
 git-status:
 	git status

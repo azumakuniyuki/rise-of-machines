@@ -18,11 +18,17 @@ DOWNLOADUSING := $(shell (which wget && echo '-O') || (which curl && echo '-Lo')
 .PHONY: clean
 .SUFFIXES:
 
-me-upgrade:
+me-upgrade: is-not-rise-machines
+	$(DOWNLOADUSING) ./Makefile $(GITHUBFILE)/server/roles/Makefile
+
+is-not-rise-machines:
 	@test "$(CURNODE)" != "rise-machines"
 
 git-status:
 	git status
 
 clean:
-
+	find . -type f -name '.travis.yml' -delete
+	find . -type f -name '.gitignore' -delete
+	find . -type d -name '.git' | xargs rm -r
+	

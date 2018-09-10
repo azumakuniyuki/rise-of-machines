@@ -39,12 +39,14 @@ env:
 		103-apply-hostname.yml 104-never-use-ipv6.yml 105-ipv4-than-ipv6.yml \
 		110-configure-sudo.yml 120-user-to-deploy.yml 130-configure-sshd.yml
 
-me-upgrade:
-	@test "$(CURNODE)" != "rise-machines"
+me-upgrade: is-not-rise-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 $(ANSIBLECMDLOG):
 	touch ./$@
+
+is-not-rise-machines:
+	@test "$(CURNODE)" != "rise-machines"
 
 git-status:
 	git status
