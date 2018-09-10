@@ -39,6 +39,9 @@ fact:
 setup: ssh-key-pair
 	$(MAKE) ansible.cfg
 
+env:
+	cd $(ROOTDIR) && make $@
+
 build:
 	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
 

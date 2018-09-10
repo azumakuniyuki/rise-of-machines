@@ -33,6 +33,12 @@ ANSIBLETARGET := $(INVENTORYLIST) $(PLAYBOOKFILES)
 all:
 	$(MAKE) $(ANSIBLECONFIG) $(INVENTORYLIST) $(ANSIBLECMDLOG)
 
+env:
+	ansible-playbook -i ./for-install \
+		100-update-package.yml 101-install-python.yml 102-notuse-selinux.yml \
+		103-apply-hostname.yml 104-never-use-ipv6.yml 105-ipv4-than-ipv6.yml \
+		110-configure-sudo.yml 120-user-to-deploy.yml 130-configure-sshd.yml
+
 me-upgrade:
 	@test "$(CURNODE)" != "rise-machines"
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
