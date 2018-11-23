@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.3'
+VERSION := '0.1.4'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -73,11 +73,10 @@ me-upgrade: is-not-rise-machines
 	done
 
 initialize-as-new-repository: is-not-rise-machines
-	if [ test -f "./.git/config" ]; then \
-		grep 'rise-machines' ./.git/config > /dev/null; \
-		rm -r ./.git; \
-		git init; \
-	fi
+	test -f "./.git/config"
+	grep 'rise-machines' ./.git/config > /dev/null
+	rm -r ./.git
+	git init
 
 is-not-rise-machines:
 	@test "$(PWDNAME)" != "rise-machines"
