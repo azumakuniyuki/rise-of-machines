@@ -52,7 +52,7 @@ install-role:
 			mkdir -p $(ROLEDIR)/$(R)/vars; \
 			touch $(ROLEDIR)/$(R)/vars/main.yml; \
 			rm -f $(ROLEDIR)/$(R)/Makefile; \
-			cd $(ROLEDIR) && make clean
+			cd $(ROLEDIR) && make clean; \
 		fi; \
 	fi
 
