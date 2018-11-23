@@ -21,7 +21,7 @@
     # --------------------------------------------------------------------------
     - block:
         - name: install-python | RedHat | Python 2.7 should have been installed(1)
-          when: python27|failed
+          when: python27 is failed
           raw:  /usr/bin/yum -y install python
 
         - name: install-python | RedHat | libselinux-python should have been installed(0)
@@ -31,14 +31,14 @@
 
         - name: install-python | RedHat | libselinux-python should have been installed(1)
           register: libselinux_python
-          when: libselinux_python|changed
+          when: libselinux_python is changed
           raw:  /usr/bin/yum -y install libselinux-python
       when: ansible_os_family == "RedHat"
 
     # --------------------------------------------------------------------------
     - block:
         - name: install-python | Debian | Python 2.7 should have been installed(1)
-          when: python27|failed
+          when: python27 is failed
           raw:  /usr/bin/aptitude -y install python2.7
       when: ansible_os_family == "Debian"
 
@@ -55,14 +55,14 @@
     # --------------------------------------------------------------------------
     - block:
         - name: install-python | OpenBSD | Python 2.7 should have been installed(1)
-          when: python27|failed
+          when: python27 is failed
           raw:  cd /usr/ports/lang/python && make install
       when: ansible_os_family == "OpenBSD"
 
     # --------------------------------------------------------------------------
     - block:
         - name: install-python | FreeBSD | Python 2.7 should have been installed(1)
-          when: python27|failed
+          when: python27 is failed
           raw:  cd /usr/ports/lang/python27 && make install
       when: ansible_os_family == "FreeBSD"
 

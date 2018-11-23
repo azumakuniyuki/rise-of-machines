@@ -16,7 +16,7 @@
       shell: grep '^wheel:' /etc/group 2> /dev/null
 
     - name: configure-sudo | wheel group should be created
-      when: wheel|failed
+      when: wheel is failed
       group:
         name:   "wheel"
         system: "yes"

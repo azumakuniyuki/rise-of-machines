@@ -17,11 +17,11 @@
         state: "file"
 
     - name: ipv4-than-ipv6 | /etc/gai.conf should be created
-      when: etc_gai_conf|failed
+      when: etc_gai_conf is failed
       shell: echo 'precedence ::ffff:0:0/96  99' >> /etc/gai.conf
 
     - name: ipv4-than-ipv6 | /etc/gai.conf should be configured
-      when: etc_gai_conf|success
+      when: etc_gai_conf is success
       replace:
         backup:  "yes"
         dest:    "/etc/gai.conf"

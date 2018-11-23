@@ -45,7 +45,7 @@
           validate: 'sshd -t -f %s'
   
       - name: configure-sshd | Change PermitRootLogin setting
-        when: rewrite_sshd_config|changed
+        when: rewrite_sshd_config is changed
         notify: Restart daemons
         replace:
           backup:    "yes"
