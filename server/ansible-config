@@ -5,7 +5,6 @@
 # working directory or /etc/ansible/ansible.cfg, whichever it finds first.
 #
 [defaults]
-hostfile       = server/for-sandbox
 inventry       = server/for-sandbox
 library        = /usr/share/ansible
 remote_tmp     = /tmp
