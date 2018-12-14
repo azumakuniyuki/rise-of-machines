@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.4'
+VERSION := '0.1.5'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -24,6 +24,7 @@ SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 WILLBEUPDATED  = Makefile
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
 BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
+SPECIFIEDTAGS := $(shell test -n "$(T)" && echo --tags "$(T)")
 .DEFAULT_GOAL := git-status
 
 # -----------------------------------------------------------------------------
@@ -43,7 +44,7 @@ env: ssh-key-pair
 	cd $(ROOTDIR) && make $@
 
 build: ssh-key-pair
-	ansible-playbook -i $(INVENTORYFILE) $(BUILDPLAYBOOK)
+	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
 
 install-role:
 	@if [ -n "$(R)" ]; then \
@@ -87,6 +88,10 @@ ssh-key-pair:
 	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) all
 	chmod 0600 $(SSHKEYFILE)
 	chmod 0644 $(subst key,pub,$(SSHKEYFILE))
+
+ssh-connection:
+	@test -n "$(H)" || (echo 'Usage: make $@ H=hostname' && false)
+	ssh -i $(SSHKEYFILE) -l $(DEPLOYUSER) $(H)
 
 # -----------------------------------------------------------------------------
 # Targets for rise-machines authors
