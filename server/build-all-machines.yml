@@ -9,6 +9,4 @@
   become_user: root
   remote_user: deploy
   roles:
-#    - some-role-name
-#    { role: some-role-name, role.var.name: value }
-
+#    - { role: "some-role-name", tags: ["neko","nyaan"] }
