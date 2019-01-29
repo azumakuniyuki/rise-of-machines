@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.5'
+VERSION := '0.1.6'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -45,6 +45,9 @@ env: ssh-key-pair
 
 build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
+
+check: ssh-key-pair
+	ansible-playbook --check -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
 
 install-role:
 	@if [ -n "$(R)" ]; then \
