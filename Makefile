@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -----------------------------------------------------------------------------
-VERSION := '0.1.6'
+VERSION := '0.1.7'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -41,7 +41,7 @@ setup: ssh-key-pair
 	$(MAKE) ansible.cfg
 
 env: ssh-key-pair
-	cd $(ROOTDIR) && make $@
+	cd $(ROOTDIR) && make -w $@
 
 build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
@@ -56,7 +56,7 @@ install-role:
 			mkdir -p $(ROLEDIR)/$(R)/vars; \
 			touch $(ROLEDIR)/$(R)/vars/main.yml; \
 			rm -f $(ROLEDIR)/$(R)/Makefile; \
-			cd $(ROLEDIR) && make clean; \
+			cd $(ROLEDIR) && make -w clean; \
 		fi; \
 	fi
 
