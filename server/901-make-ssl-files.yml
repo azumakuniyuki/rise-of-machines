@@ -69,6 +69,13 @@
         creates: "{{ item.fileprefix }}-WITH-PASSPHRASE.KEY"
       with_items: "{{ certslist }}"
 
+    - name: make-ssl-files | Each private key should be -r--------
+      file:
+        path:  "{{ directory }}/{{ item.x509.commonname }}/{{ item.fileprefix }}-WITH-PASSPHRASE.KEY"
+        mode:  "0400"
+        owner: "root"
+      with_items: "{{ certslist }}"
+
     - name: make-ssl-files | Each private key should be readable with pass phrase
       register: check_rsa0
       changed_when: check_rsa0.rc > 0
@@ -89,6 +96,13 @@
         creates: "{{ item.fileprefix }}-WITHOUT-PASSPHRASE.KEY"
       with_items: "{{ certslist }}"
 
+    - name: make-ssl-files | Each private key without passphrase should be -r--------
+      file:
+        path:  "{{ directory }}/{{ item.x509.commonname }}/{{ item.fileprefix }}-WITHOUT-PASSPHRASE.KEY"
+        mode:  "0400"
+        owner: "root"
+      with_items: "{{ certslist }}"
+
     - name: make-ssl-files | Each private key without pass phrase should be readable
       register: check_rsa1
       changed_when: check_rsa1.rc > 0
@@ -100,7 +114,7 @@
 
     - name: make-ssl-files | Each private key for web server should be created
       shell: >
-        cp {{ item.fileprefix }}-WITHOUT-PASSPHRASE.KEY {{ item.fileprefix }}.KEY
+        cp -p {{ item.fileprefix }}-WITHOUT-PASSPHRASE.KEY {{ item.fileprefix }}.KEY
       args:
         chdir:   "{{ directory }}/{{ item.x509.commonname }}"
         creates: "{{ item.fileprefix }}.KEY"
@@ -120,17 +134,17 @@
         '{{ item.x509.country }}' '{{ item.x509.state }}' '{{ item.x509.city }}'
         '{{ item.x509.company }}' '{{ item.x509.section }}'
         '{{ item.x509.commonname }}' '{{ item.x509.email }}'
-        | tr -d '"' | tr -d "'" > {{ item.fileprefix }}.SUBJ
+        | tr -d '"' | tr -d "'" > {{ item.fileprefix }}.SUBJECT
       args:
         chdir:   "{{ directory }}/{{ item.x509.commonname }}"
-        creates: "{{ item.fileprefix }}.SUBJ"
+        creates: "{{ item.fileprefix }}.SUBJECT"
       with_items: "{{ certslist }}"
 
     - name: make-ssl-files | Each CSR should be created
       shell: >
         openssl req -new -key {{ item.fileprefix }}.KEY -out {{ item.fileprefix }}.CSR 
         -days {{ item.expiration }}
-        -subj "`cat {{ item.fileprefix }}.SUBJ`"
+        -subj "`cat {{ item.fileprefix }}.SUBJECT`"
       args:
         chdir:   "{{ directory }}/{{ item.x509.commonname }}"
         creates: "{{ item.fileprefix }}.CSR"
