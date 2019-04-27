@@ -39,7 +39,7 @@
     - block:
         - name: install-python | Debian | Python 2.7 should have been installed(1)
           when: python27 is failed
-          raw:  /usr/bin/aptitude -y install python2.7
+          raw:  apt -y install python2.7
       when: ansible_os_family == "Debian"
 
     # --------------------------------------------------------------------------

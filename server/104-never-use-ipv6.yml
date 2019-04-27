@@ -21,7 +21,14 @@
 
   handlers:
     - name: Restart Network
+      when: ansible_os_family == "RedHat"
       service:
         name:  "network"
+        state: "restarted"
+
+    - name: Restart Network
+      when: ansible_os_family == "Debian"
+      service:
+        name:  "networking"
         state: "restarted"
 

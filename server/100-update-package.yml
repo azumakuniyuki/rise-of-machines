@@ -10,5 +10,14 @@
   remote_user: root
   tasks:
     - name: update-package | All the packages should be updated
+      when: ansible_os_family == "RedHat"
       raw: yum -y update
+
+    - name: update-package | Debian | All the packages should be updated
+      when: ansible_os_family == "Debian"
+      raw: apt -y update
+
+    - name: update-package | Debian | All the packages should be updated
+      when: ansible_os_family == "Debian"
+      raw: apt -y upgrade
 

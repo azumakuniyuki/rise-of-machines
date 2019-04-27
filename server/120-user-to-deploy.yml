@@ -44,7 +44,6 @@
         groups: "wheel,{{ user.group}}"
         state:  "present"
 
-
     # --------------------------------------------------------------------------
     - block:
         - name: user-to-deploy | Linux | sudoers.d/deploy has been created
