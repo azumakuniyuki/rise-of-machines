@@ -24,10 +24,18 @@
         gid:   "{{ user.gid }}"
         state: "present"
 
-    - name: user-to-deploy | wheel Group should be created
+    - name: user-to-deploy | RedHat | wheel Group should be created
+      when: ansible_os_family == "RedHat"
       group:
         name:  "wheel"
-        gid:   "0"
+        gid:   "10"
+        state: "present"
+
+    - name: user-to-deploy | Debian | wheel Group should be created
+      when: ansible_os_family == "Debian"
+      group:
+        name:  "wheel"
+        gid:   "11"
         state: "present"
 
     - name: user-to-deploy | User for deployment should be created
