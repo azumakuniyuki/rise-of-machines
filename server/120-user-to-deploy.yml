@@ -24,6 +24,12 @@
         gid:   "{{ user.gid }}"
         state: "present"
 
+    - name: user-to-deploy | wheel Group should be created
+      group:
+        name:  "wheel"
+        gid:   "0"
+        state: "present"
+
     - name: user-to-deploy | User for deployment should be created
       user:
         name:   "{{ user.username }}"
