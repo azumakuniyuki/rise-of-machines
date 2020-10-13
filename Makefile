@@ -79,7 +79,7 @@ me-upgrade: is-not-rise-machines
 initialize-as-new-repository: is-not-rise-machines
 	test -f "./.git/config"
 	grep 'rise-machines' ./.git/config > /dev/null
-	rm -r ./.git
+	rm -fr ./.git
 	git init
 
 is-not-rise-machines:
