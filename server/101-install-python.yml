@@ -18,7 +18,7 @@
       changed_when: python27.rc > 0
       raw: which python 2> /dev/null
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | RedHat | Python 2.7 should have been installed(1)
           when: python27 is failed
@@ -35,14 +35,14 @@
           raw:  /usr/bin/yum -y install libselinux-python
       when: ansible_os_family == "RedHat"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | Debian | Python 2.7 should have been installed(1)
           when: python27 is failed
           raw:  apt -y install python2.7
       when: ansible_os_family == "Debian"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | Linux | Python 2.7 should have been installed(2)
           register: python_installed
@@ -52,21 +52,21 @@
       when: ansible_os_family in ["RedHat", "Debian"]
 
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | OpenBSD | Python 2.7 should have been installed(1)
           when: python27 is failed
           raw:  cd /usr/ports/lang/python && make install
       when: ansible_os_family == "OpenBSD"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | FreeBSD | Python 2.7 should have been installed(1)
           when: python27 is failed
           raw:  cd /usr/ports/lang/python27 && make install
       when: ansible_os_family == "FreeBSD"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: install-python | BSD | /usr/local/bin/python should be created as a link
           raw:  test -e {{ local }}/bin/python || ln -s {{ local }}/bin/python2.7 {{ local }}/bin/python

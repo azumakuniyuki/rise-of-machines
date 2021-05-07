@@ -28,7 +28,7 @@
         name:   "root"
         groups: "wheel"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: configure-sudo | RedHat | sudo(8) should be installed
           yum:
@@ -43,7 +43,7 @@
             replace: '%wheel	ALL=(ALL)	ALL'
       when: ansible_os_family == "RedHat"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: configure-sudo | Debian | sudo(8) should be installed
           apt:
@@ -51,7 +51,7 @@
             state: "present"
       when: ansible_os_family == "Debian"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: configure-sudo | FreeBSD | sudo(8) should be installed
           pkgng:
@@ -66,7 +66,7 @@
             replace: '%wheel ALL=(ALL) ALL'
       when: ansible_os_family == "FreeBSD"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: configure-sudo | OpenBSD | Enable sudo for users in wheel group
           replace:

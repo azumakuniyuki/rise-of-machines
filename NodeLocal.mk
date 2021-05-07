@@ -1,14 +1,14 @@
-# User-Defined Makefile for github.com/azumakuniyuki/make-server
+# User-Defined Makefile for github.com/azumakuniyuki/rise-of-machines
 #  _   _           _      _                    _             _    
 # | \ | | ___   __| | ___| |    ___   ___ __ _| |  _ __ ___ | | __
 # |  \| |/ _ \ / _` |/ _ \ |   / _ \ / __/ _` | | | '_ ` _ \| |/ /
 # | |\  | (_) | (_| |  __/ |__| (_) | (_| (_| | |_| | | | | |   < 
 # |_| \_|\___/ \__,_|\___|_____\___/ \___\__,_|_(_)_| |_| |_|_|\_\
-# This file is not updated by `makeserverctl --update-makefile`.
-# ---------------------------------------------------------------------------
+# This file is not updated by `make --me-upgrade
+# -------------------------------------------------------------------------------------------------
 PATHTOANSIBLE  = $(shell which ansible)
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 uptime:
 	$(PATHTOANSIBLE) all -i $(INVENTORYFILE) -m command -a 'uptime'
 

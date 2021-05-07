@@ -58,7 +58,7 @@
         groups: "wheel,{{ user.group}}"
         state:  "present"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: user-to-deploy | Linux | sudoers.d/deploy has been created
           shell: >
@@ -76,7 +76,7 @@
             state: "file"
       when: ansible_system == "Linux"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: user-to-deploy | FreeBSD | sudoers.d/deploy has been created
           shell: >
@@ -94,7 +94,7 @@
             state: "file"
       when: ansible_os_family == "FreeBSD"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - block:
         - name: user-to-deploy | OpenBSD | Check /etc/sudoers
           register: sudoers
@@ -103,7 +103,7 @@
           shell: grep %{{ user.group }} /etc/sudoers
       when: ansible_system == "OpenBSD"
 
-    # --------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
     - name: user-to-deploy | {{ user.group }} should be registered in /etc/sudoers
       when: sudoers.changed
       ignore_errors: true

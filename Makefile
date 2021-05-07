@@ -6,7 +6,7 @@
 # |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 #                                                                                     
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.1.12'
+VERSION := '0.1.13'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -29,7 +29,6 @@ SPECIFIEDTAGS := $(shell test -n "$(T)" && echo --tags "$(T)")
 .DEFAULT_GOAL := git-status
 
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.1.12'
 .PHONY: clean all $(SUBDIRS)
 
 ansible.cfg:
