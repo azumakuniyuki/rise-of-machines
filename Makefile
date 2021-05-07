@@ -1,11 +1,12 @@
-# Makefile for github.com/azumakuniyuki/rise-machines
-#       _                                     _     _                 
-#  _ __(_)___  ___       _ __ ___   __ _  ___| |__ (_)_ __   ___  ___ 
-# | '__| / __|/ _ \_____| '_ ` _ \ / _` |/ __| '_ \| | '_ \ / _ \/ __|
-# | |  | \__ \  __/_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
-# |_|  |_|___/\___|     |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
-# -----------------------------------------------------------------------------
-VERSION := '0.1.10'
+# Makefile for github.com/azumakuniyuki/rise-of-machines
+#       _                       __                            _     _                 
+#  _ __(_)___  ___        ___  / _|      _ __ ___   __ _  ___| |__ (_)_ __   ___  ___ 
+# | '__| / __|/ _ \_____ / _ \| |_ _____| '_ ` _ \ / _` |/ __| '_ \| | '_ \ / _ \/ __|
+# | |  | \__ \  __/_____| (_) |  _|_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
+# |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
+#                                                                                     
+# -------------------------------------------------------------------------------------------------
+VERSION := '0.1.12'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -16,8 +17,8 @@ ULIBDIR := lib
 
 DOWNLOADBY := $(shell (which wget && echo '-O') || (which curl && echo '-Lo') || echo 'get-command')
 GITHUBROOT  = https://github.com/azumakuniyuki
-GITHUBFILE  = https://raw.githubusercontent.com/azumakuniyuki/rise-machines/master
-REPOSITORY  = $(GITHUBROOT)/rise-machines.git
+GITHUBFILE  = https://raw.githubusercontent.com/azumakuniyuki/rise-of-machines/master
+REPOSITORY  = $(GITHUBROOT)/rise-of-machines.git
 DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
@@ -27,7 +28,8 @@ BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 SPECIFIEDTAGS := $(shell test -n "$(T)" && echo --tags "$(T)")
 .DEFAULT_GOAL := git-status
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+VERSION := '0.1.12'
 .PHONY: clean all $(SUBDIRS)
 
 ansible.cfg:
@@ -40,8 +42,15 @@ fact:
 setup: ssh-key-pair
 	$(MAKE) ansible.cfg
 
-env: ssh-key-pair
+env: ssh-key-pair sshpass
 	cd $(ROOTDIR) && make -w $@
+
+sshpass:
+	test -x /usr/local/bin/$@ || ( \
+		echo 'https://sourceforge.net/projects/sshpass/files/latest/download' && \
+		echo 'gunzip -c sshpass-1.06.tar.gz | tar xvf -' && \
+		echo 'cd ./sshpass-1.06 && /bin/sh configure --prefix=/usr/local && make && make install' && \
+		exit 1 )
 
 build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
@@ -70,22 +79,22 @@ role-skeleton:
 		done; \
 	fi
 
-me-upgrade: is-not-rise-machines
+me-upgrade: is-not-rise-of-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADBY) ./$$v $(GITHUBFILE)/$$v; done
 	@for v in $(SUBDIRS); do \
 		cd $(HEREIAM)/$$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@; \
 	done
 
-initialize-as-new-repository: is-not-rise-machines
+initialize-as-new-repository: is-not-rise-of-machines
 	test -f "./.git/config"
-	grep 'rise-machines' ./.git/config > /dev/null
+	grep 'rise-of-machines' ./.git/config > /dev/null
 	rm -fr ./.git
 	git init
 
-is-not-rise-machines:
-	@test "$(PWDNAME)" != "rise-machines"
+is-not-rise-of-machines:
+	@test "$(PWDNAME)" != "rise-of-machines"
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 # Sub directory: .ssh/
 ssh-key-pair:
 	cd .ssh && $(MAKE) DEPLOYKEY=$(SSHKEYFILE) DEPLOYUSER=$(DEPLOYUSER) all
@@ -96,8 +105,8 @@ ssh-connection:
 	@test -n "$(H)" || (echo 'Usage: make $@ H=hostname' && false)
 	ssh -i $(SSHKEYFILE) -l $(DEPLOYUSER) $(H)
 
-# -----------------------------------------------------------------------------
-# Targets for rise-machines authors
+# -------------------------------------------------------------------------------------------------
+# Targets for rise-of-machines authors
 git-status:
 	git status
 
@@ -124,7 +133,7 @@ clean:
 	cd $(ROOTDIR) && make $@
 	cd $(ROLEDIR) && make $@
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 # include NodeLocal.mk, User-defined macros and targets are defined in the file.
 include NodeLocal.mk
 

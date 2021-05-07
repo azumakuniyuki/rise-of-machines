@@ -1,10 +1,10 @@
-# Makefile for rise-machines/server
+# Makefile for rise-of-machines/server
 #                                ____  __       _         __ _ _      
 #  ___  ___ _ ____   _____ _ __ / /  \/  | __ _| | _____ / _(_) | ___ 
 # / __|/ _ \ '__\ \ / / _ \ '__/ /| |\/| |/ _` | |/ / _ \ |_| | |/ _ \
 # \__ \  __/ |   \ V /  __/ | / / | |  | | (_| |   <  __/  _| | |  __/
 # |___/\___|_|    \_/ \___|_|/_/  |_|  |_|\__,_|_|\_\___|_| |_|_|\___|
-# ---------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 HEREIAM  = $(shell pwd)
 PWDNAME  = $(shell echo $(HEREIAM) | xargs basename)
 CURNODE := $(shell echo $(dir $(HEREIAM)) | xargs basename)
@@ -26,7 +26,7 @@ BUILDPLAYBOOK := build-all-machines.yml
 ANSIBLETARGET := $(INVENTORYLIST) $(PLAYBOOKFILES)
 .DEFAULT_GOAL := git-status
 
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 .PHONY: clean
 .SUFFIXES:
 
@@ -39,14 +39,14 @@ env:
 		103-apply-hostname.yml 104-never-use-ipv6.yml 105-ipv4-than-ipv6.yml \
 		110-configure-sudo.yml 120-user-to-deploy.yml 130-configure-sshd.yml
 
-me-upgrade: is-not-rise-machines
+me-upgrade: is-not-rise-of-machines
 	@for v in $(WILLBEUPDATED); do $(DOWNLOADUSING) ./$$v $(GITHUBFILE)/$(PWDNAME)/$$v; done
 
 $(ANSIBLECMDLOG):
 	touch ./$@
 
-is-not-rise-machines:
-	@test "$(CURNODE)" != "rise-machines"
+is-not-rise-of-machines:
+	@test "$(CURNODE)" != "rise-of-machines"
 
 git-status:
 	git status
