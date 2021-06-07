@@ -9,91 +9,88 @@
   become_user: root
   remote_user: deploy
   vars:
+    prefix: "cx-"
+    suffix: "-{{ ansible_date_time.date }}"
     destination: "~/"
     servicelist: ["postfix", "dovecot"]
     journalopts: "-r -p3 -S today --no-pager -n 100"
   tasks:
-    - name: host-specimens | Prefix value should be generated
-      register: prefix
-      changed_when: false
-      shell: date '+%F'
-
     - name: host-specimens | uptime command should be executed
       shell: >
-        uptime > ./uptime-{{ prefix.stdout }}
+        uptime > ./{{ prefix }}uptime{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./uptime-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}uptime{{ suffix }}"
 
     - name: host-specimens | ps command should be executed
       shell: >
-        ps auxwwf > ./ps-{{ prefix.stdout }}
+        ps auxwwf > ./{{ prefix }}ps{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./ps-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}ps{{ suffix }}"
 
     - name: host-specimens | top command should be executed
       shell: >
-        top -bc -n 1 > ./top-{{ prefix.stdout }}
+        top -bc -n 1 > ./{{ prefix }}top{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./top-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}top{{ suffix }}"
 
     - name: host-specimens | free command should be executed
       shell: >
-        free -m > ./free-{{ prefix.stdout }}
+        free -m > ./{{ prefix }}free{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./free-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}free{{ suffix }}"
 
     - name: host-specimens | df command should be executed
       shell: >
-        df -h > ./df-{{ prefix.stdout }}
+        df -h > ./{{ prefix }}df{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./df-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}df{{ suffix }}"
 
     - name: host-specimens | netstat -nat command should be executed
       shell: >
-        netstat -nat > ./netstat-nat-{{ prefix.stdout }}
+        netstat -nat > ./{{ prefix }}netstat-nat{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./netstat-nat-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}netstat-nat{{ suffix }}"
 
     - name: host-specimens | netstat -nar command should be executed
       shell: >
-        netstat -nar > ./netstat-nar-{{ prefix.stdout }}
+        netstat -nar > ./{{ prefix }}netstat-nar{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./netstat-nar-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}netstat-nar{{ suffix }}"
 
     - name: host-specimens | ls /tmp command should be executed
       shell: >
-        ls -laF /tmp > ./ls-tmp-{{ prefix.stdout }}
+        ls -laF /tmp > ./{{ prefix }}ls-tmp{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./ls-tmp-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}ls-tmp{{ suffix }}"
 
     - name: host-specimens | journalctl -k command should be executed
       shell: >
-        journalctl {{ journalopts }} -k > ./journalctl-kernel-{{ prefix.stdout }}
+        journalctl {{ journalopts }} -k > ./{{ prefix }}journalctl-kernel{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./journalctl-kernel-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}journalctl-kernel{{ suffix }}"
 
     - name: host-specimens | systemctl command should be executed
       shell: >
-        journalctl {{ journalopts }} -u {{ item }} > ./journalctl-{{ item }}-{{ prefix.stdout }}
+        journalctl {{ journalopts }} -u {{ item }} > ./{{ prefix }}journalctl-{{ item }}{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./journalctl-{{ item }}-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}journalctl-{{ item }}{{ suffix }}"
       with_items: "{{ servicelist }}"
 
     - name: host-specimens | systemctl command should be executed
       shell: >
-        systemctl status {{ item }} > ./systemctl-{{ item }}-{{ prefix.stdout }}
+        systemctl status {{ item }} > ./{{ prefix }}systemctl-{{ item }}{{ suffix }}
       args:
         chdir:   "{{ destination }}"
-        creates: "./systemctl-{{ item }}-{{ prefix.stdout }}"
+        creates: "./{{ prefix }}systemctl-{{ item }}{{ suffix }}"
       with_items: "{{ servicelist }}"
 
