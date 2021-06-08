@@ -10,7 +10,7 @@
   remote_user: deploy
   vars:
     prefix: "cx-"
-    suffix: "-{{ ansible_date_time.date }}"
+    suffix: "-{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}"
     destination: "~/"
     servicelist: ["postfix", "dovecot"]
     journalopts: "-r -p3 -S today --no-pager -n 100"
