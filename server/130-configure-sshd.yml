@@ -54,16 +54,16 @@
           replace:   'PermitRootLogin {{ sshd.rootlogin }}'
           validate:  'sshd -t -f %s'
 
-      - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(1)
-        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+      - name: configure-sshd | RedHat | /etc/firewalld/services/ssh.xml(1)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_os_family == "RedHat"
         notify: Restart daemons
         shell: cp -p /usr/lib/firewalld/services/ssh.xml .
         args:
           chdir:   "/etc/firewalld/services"
           creates: "ssh.xml"
 
-      - name: configure-sshd | Linux | /etc/firewalld/services/ssh.xml(2)
-        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+      - name: configure-sshd | RedHat | /etc/firewalld/services/ssh.xml(2)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_os_family == "RedHat"
         notify: Restart daemons
         replace:
           backup:   "no"
@@ -71,18 +71,47 @@
           regexp:   'port="[0-9]+"/>'
           replace:  'port="{{ sshd.port }}"/>'
 
-      - name: configure-sshd | Linux | Open SSHd port on FirewallD
-        when: sshd.port > 0 and sshd.port < 65535 and ansible_system == "Linux"
+      - name: configure-sshd | RedHat | Open SSHd port on FirewallD
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_os_family == "RedHat"
         notify: Restart daemons
         firewalld:
           service:   "ssh"
           permanent: true
           zone:      "public"
           state:     "enabled"
+
+      - name: configure-sshd | Debian | /etc/ufw/applications.d/openssh-server(1)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_os_family == "Debian"
+        notify: Enable ufw
+        ufw:
+          rule: "allow"
+          name: "OpenSSH"
+
+      - name: configure-sshd | Debian | /etc/ufw/applications.d/openssh-server(2)
+        when: sshd.port > 0 and sshd.port < 65535 and ansible_os_family == "Debian"
+        notify: Restart OpenSSH-Server
+        replace:
+          backup:   "no"
+          dest:     "/etc/ufw/applications.d/openssh-server"
+          regexp:   'ports=[0-9]+/'
+          replace:  'ports={{ sshd.port }}/'
       when: sshd.execute == true
 
   handlers:
     - name: Restart daemons
+      when: ansible_os_family == "RedHat"
       shell: >
         service sshd restart; service firewalld restart
+
+    - name: Restart OpenSSH-Server
+      when: ansible_os_family == "Debian"
+      service:
+        name:  "sshd"
+        state: "restarted"
+
+    - name: Enable ufw
+      when: ansible_os_family == "Debian"
+      ufw:
+        policy: "deny"
+        state:  "enabled"
 
