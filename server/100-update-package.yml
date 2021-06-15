@@ -17,7 +17,3 @@
       when: ansible_os_family == "Debian"
       raw: apt -y update
 
-    - name: update-package | Debian | All the packages should be updated
-      when: ansible_os_family == "Debian"
-      raw: apt -y upgrade
-
