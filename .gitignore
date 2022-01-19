@@ -1,9 +1,31 @@
-server/ansible.log
-ansible.cfg
-.vagrant
-*.un~
-*.retry
-data/
+# Ignore files and directories of Terraform
+*.tfvars
+.terraform
+terraform.tfstate
+terraform.tfstate.*
+
+# Ignore files and directories of Ansible
+host0/server/ansible.log
+host0/ansible.cfg
+host0/.vagrant
+host0/*.un~
+host0/*.retry
+host0/data/
+host0/tmp
+host0/.ssh/*.key
+host0/.ssh/*.pub
+*/server/ansible.log
+*/ansible.cfg
+*/*.retry
+
+# Ignore temporary directories
 tmp/
-.ssh/*.key
-.ssh/*.pub
+*/tmp
+*/*/tmp
+
+# Ignore SSH private keys
+*/.ssh/*.key
+*/.ssh/*.pem
+
+
+
