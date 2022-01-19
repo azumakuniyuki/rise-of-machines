@@ -1,4 +1,4 @@
-# Makefile for github.com/azumakuniyuki/rise-of-machines
+# Makefile for github.com/azumakuniyuki/rise-of-machines/host0
 #       _                       __                            _     _                 
 #  _ __(_)___  ___        ___  / _|      _ __ ___   __ _  ___| |__ (_)_ __   ___  ___ 
 # | '__| / __|/ _ \_____ / _ \| |_ _____| '_ ` _ \ / _` |/ __| '_ \| | '_ \ / _ \/ __|
@@ -6,7 +6,6 @@
 # |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 #                                                                                     
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.1.17'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -84,12 +83,6 @@ me-upgrade: is-not-rise-of-machines
 		cd $(HEREIAM)/$$v && $(MAKE) GITHUBFILE=$(GITHUBFILE) $@; \
 	done
 
-initialize-as-new-repository: is-not-rise-of-machines
-	test -f "./.git/config"
-	grep 'rise-of-machines' ./.git/config > /dev/null
-	rm -fr ./.git
-	git init
-
 is-not-rise-of-machines:
 	@test "$(PWDNAME)" != "rise-of-machines"
 
@@ -103,29 +96,6 @@ ssh-key-pair:
 ssh-connection:
 	@test -n "$(H)" || (echo 'Usage: make $@ H=hostname' && false)
 	ssh -i $(SSHKEYFILE) -l $(DEPLOYUSER) $(H)
-
-# -------------------------------------------------------------------------------------------------
-# Targets for rise-of-machines authors
-git-status:
-	git status
-
-diff push branch:
-	@$(MAKE) git-$@
-fix-commit-message: git-commit-amend
-cancel-the-latest-commit: git-reset-soft
-remove-added-file: git-rm-cached
-
-git-commit-amend:
-	git commit --amend
-
-git-current-branch:
-	@git branch --contains=HEAD | grep '*' | awk '{ print $$2 }'
-
-git-push:
-	@ for v in `git remote show | grep -v origin`; do \
-		printf "[%s]\n" $$v; \
-		git push --tags $$v `$(MAKE) git-current-branch`; \
-	done
 
 clean:
 	rm -f ./*.retry
