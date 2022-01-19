@@ -53,7 +53,8 @@ sshpass:
 build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
 
-check: ssh-key-pair
+check: test
+test: ssh-key-pair
 	ansible-playbook --check -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
 
 install-role:
