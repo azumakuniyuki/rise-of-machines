@@ -22,7 +22,7 @@ DEPLOYUSER := deploy
 SSHKEYFILE  = ./.ssh/ssh.$(DEPLOYUSER)-rsa.key
 
 WILLBEUPDATED  = Makefile
-INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory-file)
+INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory)
 BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 SPECIFIEDTAGS := $(shell test -n "$(T)" && echo --tags "$(T)")
 .DEFAULT_GOAL := git-status
