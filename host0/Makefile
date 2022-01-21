@@ -25,7 +25,9 @@ WILLBEUPDATED  = Makefile
 INVENTORYFILE  = $(ROOTDIR)/$(shell head -1 ./.default-inventory)
 BUILDPLAYBOOK := $(ROOTDIR)/build-all-machines.yml
 SPECIFIEDTAGS := $(shell test -n "$(T)" && echo --tags "$(T)")
-.DEFAULT_GOAL := git-status
+
+GITCOMMANDSET := $(shell grep '^git-' ../Repository.mk | sed 's/git-//' | tr -d ':' | tr '\n' ' ')
+.DEFAULT_GOAL := status
 
 # -------------------------------------------------------------------------------------------------
 .PHONY: clean all $(SUBDIRS)
@@ -102,6 +104,11 @@ clean:
 	rm -f ./*.retry
 	cd $(ROOTDIR) && make $@
 	cd $(ROLEDIR) && make $@
+
+# -------------------------------------------------------------------------------------------------
+# git related targets
+$(GITCOMMANDSET):
+	$(MAKE) -f ../Repository.mk git-$@
 
 # -------------------------------------------------------------------------------------------------
 # include NodeLocal.mk, User-defined macros and targets are defined in the file.
