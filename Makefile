@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| (_) |  _|_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.2.1'
+VERSION := '0.2.2'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -16,7 +16,7 @@ TERRAFORM := AWS_DEFAULT_PROFILE=$(PROFILE) $(shell which terraform)
 TFTARGETS := apply fmt plan refresh validate
 
 GITCOMMANDSET := $(shell grep '^git-' ./Repository.mk | sed 's/git-//' | tr -d ':' | tr '\n' ' ')
-.DEFAULT_GOAL := status 
+.DEFAULT_GOAL := status
 
 # -------------------------------------------------------------------------------------------------
 .PHONY: clean all $(SUBDIRS)
@@ -31,6 +31,11 @@ sure-account-id:
 
 sure-default-profile:
 	test -n "$(PROFILE)"
+
+initialize-as-new-environment:
+	rm -f  ./terraform.tfstate*
+	rm -f  ./.terraform-version ./.terraform.lock.hcl
+	rm -rf .terraform/
 
 printenv:
 	@ echo export AWS_DEFAULT_PROFILE=$(PROFILE)
