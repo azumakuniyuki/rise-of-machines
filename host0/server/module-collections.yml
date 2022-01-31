@@ -1,0 +1,15 @@
+#                      _       _                      _ _           _   _                 
+#  _ __ ___   ___   __| |_   _| | ___        ___ ___ | | | ___  ___| |_(_) ___  _ __  ___ 
+# | '_ ` _ \ / _ \ / _` | | | | |/ _ \_____ / __/ _ \| | |/ _ \/ __| __| |/ _ \| '_ \/ __|
+# | | | | | | (_) | (_| | |_| | |  __/_____| (_| (_) | | |  __/ (__| |_| | (_) | | | \__ \
+# |_| |_| |_|\___/ \__,_|\__,_|_|\___|      \___\___/|_|_|\___|\___|\__|_|\___/|_| |_|___/
+# https://docs.ansible.com/ansible/latest/collections/index.html
+---
+collections:
+  - ansible.posix
+  - ansible.utils
+  - community.crypto
+  - community.general
+  - community.mysql
+  - community.postgresql
+
