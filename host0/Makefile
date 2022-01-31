@@ -41,6 +41,7 @@ fact:
 
 setup: ssh-key-pair
 	$(MAKE) ansible.cfg
+	$(MAKE) install-collections
 
 env: ssh-key-pair sshpass
 	cd $(ROOTDIR) && make -w $@
@@ -49,8 +50,7 @@ sshpass:
 	test -x /usr/local/bin/$@ || ( \
 		echo 'https://sourceforge.net/projects/sshpass/files/latest/download' && \
 		echo 'gunzip -c sshpass-1.06.tar.gz | tar xvf -' && \
-		echo 'cd ./sshpass-1.06 && /bin/sh configure --prefix=/usr/local && make && make install' && \
-		exit 1 )
+		echo 'cd ./sshpass-1.06 && /bin/sh configure --prefix=/usr/local && make && make install' && exit 1 )
 
 build: ssh-key-pair
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
@@ -58,6 +58,9 @@ build: ssh-key-pair
 check: test
 test: ssh-key-pair
 	ansible-playbook --check -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
+
+install-collections:
+	ansible-galaxy collection install --ignore-certs -r $(ROOTDIR)/module-collections.yml
 
 install-role:
 	@if [ -n "$(R)" ]; then \
