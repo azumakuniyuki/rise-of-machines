@@ -5,14 +5,15 @@
 # | |  | \__ \  __/_____| (_) |  _|_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.2.2'
+VERSION := '0.2.3'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
-PROFILE := $(shell head -1 ./.default-profile)
 ACCOUNT := $(shell head -1 ./.account-id)
+PROFILE := $(shell head -1 ./.default-profile)
+REGION0 := $(shell head -1 ./.default-region)
 
-TERRAFORM := AWS_DEFAULT_PROFILE=$(PROFILE) $(shell which terraform)
+TERRAFORM := AWS_DEFAULT_PROFILE=$(PROFILE) AWS_DEFAULT_REGION=$(REGION0) $(shell which terraform)
 TFTARGETS := apply fmt plan refresh validate
 
 GITCOMMANDSET := $(shell grep '^git-' ./Repository.mk | sed 's/git-//' | tr -d ':' | tr '\n' ' ')
@@ -23,7 +24,7 @@ GITCOMMANDSET := $(shell grep '^git-' ./Repository.mk | sed 's/git-//' | tr -d '
 .terraform-version:
 	$(TERRAFORM) --version | head -1 | cut -d' ' -f2 | tr -d 'v' > $@
 
-sure: sure-default-profile sure-account-id
+sure: sure-default-profile sure-account-id sure-default-region
 sure-account-id:
 	test -n $(ACCOUNT)
 	test $(shell echo $(ACCOUNT) | wc -c) -ge 10
@@ -31,6 +32,9 @@ sure-account-id:
 
 sure-default-profile:
 	test -n "$(PROFILE)"
+
+sure-default-region:
+	test -n "$(REGION0)"
 
 initialize-as-new-environment:
 	rm -f  ./terraform.tfstate*
