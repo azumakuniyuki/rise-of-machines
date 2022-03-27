@@ -61,7 +61,7 @@ resource aws_vpc "vpc-1" {
 # -------------------------------------------------------------------------------------------------
 resource aws_subnet "subnet-ec2-1" {
   cidr_block = "192.0.2.0/25"
-  availability_zone = "us-east-1a"
+  availability_zone = lookup(var.abzone, "a")
   vpc_id = aws_vpc.vpc-1.id
   map_public_ip_on_launch = true
   tags = merge({ Name = "${local.prefix}-subnet-ec2-1" }, local.defaulttag)
@@ -73,7 +73,7 @@ resource aws_route_table_association "subnet-ec2-1-to-internet" {
 
 resource aws_subnet "subnet-rds-1" {
   cidr_block = "192.0.2.128/26"
-  availability_zone = "us-east-1a"
+  availability_zone = lookup(var.abzone, "a")
   vpc_id = aws_vpc.vpc-1.id
   map_public_ip_on_launch = false
   tags = merge({ Name = "${local.prefix}-subnet-rds-1" }, local.defaulttag)
@@ -81,7 +81,7 @@ resource aws_subnet "subnet-rds-1" {
 
 resource aws_subnet "subnet-rds-2" {
   cidr_block = "192.0.2.192/26"
-  availability_zone = "us-east-1d"
+  availability_zone = lookup(var.abzone, "d")
   vpc_id = aws_vpc.vpc-1.id
   map_public_ip_on_launch = false
   tags = merge({ Name = "${local.prefix}-subnet-rds-2" }, local.defaulttag)

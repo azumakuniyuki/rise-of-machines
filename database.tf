@@ -26,7 +26,7 @@ resource aws_db_subnet_group "sng-1" {
 # -------------------------------------------------------------------------------------------------
 resource aws_db_instance "rds1" {
   identifier        = "${local.prefix}-rds-1"
-  availability_zone = "us-east-1a"
+  availability_zone = lookup(var.abzone, "a")
   instance_class    = "db.t3.micro"
   multi_az          = false
   engine            = "mysql"
