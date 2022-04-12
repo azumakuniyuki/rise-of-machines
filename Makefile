@@ -5,7 +5,7 @@
 # | |  | \__ \  __/_____| (_) |  _|_____| | | | | | (_| | (__| | | | | | | |  __/\__ \
 # |_|  |_|___/\___|      \___/|_|       |_| |_| |_|\__,_|\___|_| |_|_|_| |_|\___||___/
 # -------------------------------------------------------------------------------------------------
-VERSION := '0.2.5'
+VERSION := '0.2.6'
 HEREIAM := $(shell pwd)
 PWDNAME := $(shell echo $(HEREIAM) | xargs basename)
 MAKEDIR := mkdir -p
@@ -14,7 +14,9 @@ PROFILE := $(shell head -1 ./.default-profile)
 REGION0 := $(shell head -1 ./.default-region)
 
 TERRAFORM := AWS_DEFAULT_PROFILE=$(PROFILE) AWS_DEFAULT_REGION=$(REGION0) $(shell which terraform)
-TFTARGETS := apply fmt plan refresh validate
+TFTARGET0 := apply plan refresh
+TFTARGET1 := fmt validate
+ARGUMENTS := $(shell test -n "$(T)" && echo -target=$(T))
 
 GITCOMMANDSET := $(shell grep '^git-' ./Repository.mk | sed 's/git-//' | tr -d ':' | tr '\n' ' ')
 .DEFAULT_GOAL := status
@@ -50,7 +52,10 @@ init: .terraform-version
 resource-list:
 	@ grep '^resource ' ./*.tf | cut -d' ' -f2,3 | tr -d '"' | tr ' ' '.' | sort
 
-$(TFTARGETS): sure
+$(TFTARGET0): sure
+	$(TERRAFORM) $@ $(ARGUMENTS)
+
+$(TFTARGET1): sure
 	$(TERRAFORM) $@
 
 build: sure
