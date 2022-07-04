@@ -26,6 +26,7 @@
           city:       "Kyoto"
           company:    '"EXAMPLE Co. Ltd."'
           section:    '"Network System"'
+          extension:  '"subjectAltName = DNS:www.example.jp,DNS:neko.example.jp"'
   tasks:
     - name: make-ssl-files | RedHat | openssl command should be installed
       when: ansible_os_family == "RedHat"
@@ -142,9 +143,12 @@
 
     - name: make-ssl-files | Each CSR should be created
       shell: >
-        openssl req -new -key {{ item.fileprefix }}.KEY -out {{ item.fileprefix }}.CSR 
+        openssl req -extensions v3_req -new
+        -key {{ item.fileprefix }}.KEY
+        -out {{ item.fileprefix }}.CSR 
         -days {{ item.expiration }}
         -subj "`cat {{ item.fileprefix }}.SUBJECT`"
+        -addext {{ item.x509.extension }}
       args:
         chdir:   "{{ directory }}/{{ item.x509.commonname }}"
         creates: "{{ item.fileprefix }}.CSR"
@@ -153,14 +157,14 @@
     - name: make-ssl-files | Each CSR should be validated
       register: check_csr
       changed_when: check_csr.rc > 0
-      shell: openssl req -in {{ item.fileprefix }}.CSR -text
+      shell: openssl req -extensions v3_req -in {{ item.fileprefix }}.CSR -text
       args:
         chdir: "{{ directory }}/{{ item.x509.commonname }}"
       with_items: "{{ certslist }}"
 
     - name: make-ssl-files | Each self signed certificate should be created
       shell: >
-        openssl x509 -req -in {{ item.fileprefix }}.CSR -days {{ item.expiration }}
+        openssl x509 -extensions v3_req -req -in {{ item.fileprefix }}.CSR -days {{ item.expiration }}
         -signkey {{ item.fileprefix }}.KEY -out {{ item.fileprefix }}.CRT
       args:
         chdir:   "{{ directory }}/{{ item.x509.commonname }}"
@@ -170,7 +174,7 @@
     - name: make-ssl-files | Each certificate should be validated
       register: check_crt
       changed_when: check_crt.rc > 0
-      shell: openssl x509 -in {{ item.fileprefix }}.CRT -text
+      shell: openssl x509 -extensions v3_req -in {{ item.fileprefix }}.CRT -text
       args:
         chdir: "{{ directory }}/{{ item.x509.commonname }}"
       with_items: "{{ certslist }}"
