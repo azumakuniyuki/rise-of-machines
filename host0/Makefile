@@ -53,6 +53,7 @@ sshpass:
 		echo 'cd ./sshpass-1.06 && /bin/sh configure --prefix=/usr/local && make && make install' && exit 1 )
 
 build: ssh-key-pair
+	test -z ./.do-not-build
 	ansible-playbook -i $(INVENTORYFILE) $(SPECIFIEDTAGS) $(BUILDPLAYBOOK)
 
 check: test
